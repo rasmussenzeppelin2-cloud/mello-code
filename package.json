@@ -1,0 +1,46 @@
+{
+  "name": "mello-code",
+  "version": "1.0.0",
+  "description": "Mello Code - Local AI coding assistant for Windows",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir"
+  },
+  "keywords": [
+    "ai",
+    "coding",
+    "ollama",
+    "roblox",
+    "desktop"
+  ],
+  "author": "Mello Code",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.0"
+  },
+  "build": {
+    "appId": "com.mello.code",
+    "productName": "Mello Code",
+    "directories": {
+      "output": "build"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "files": [
+      "**/*",
+      "!**/*.md",
+      "!node_modules/**"
+    ]
+  }
+}

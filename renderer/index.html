@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mello Code</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">M</div>
+          <div>
+            <h1>Mello Code</h1>
+            <small>Local AI coding agent</small>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button id="openProjectBtn">Open Project</button>
+          <button id="newChatBtn" class="secondary">New Chat</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>Project</span>
+          </div>
+          <div id="projectPath" class="muted">No project selected</div>
+          <div class="project-stats">
+            <span>Files: <strong id="fileCount">0</strong></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>Files</span>
+          </div>
+          <div id="fileList" class="file-list"></div>
+        </div>
+      </aside>
+
+      <main class="main-panel">
+        <header class="topbar">
+          <div class="status">
+            <span class="dot"></span>
+            <span id="statusText">Checking local AI...</span>
+          </div>
+
+          <div class="toolbar">
+            <label class="model-picker">
+              <span>Model</span>
+              <select id="modelSelect">
+                <option value="">Loading models...</option>
+              </select>
+            </label>
+          </div>
+        </header>
+
+        <section id="chatMessages" class="chat-messages"></section>
+
+        <div class="composer">
+          <textarea id="promptInput" rows="4" placeholder="Describe the feature, bug, or game mechanic you want to build..."></textarea>
+          <div class="composer-actions">
+            <button id="sendBtn">Send</button>
+          </div>
+        </div>
+      </main>
+
+      <aside class="right-panel">
+        <div class="panel">
+          <div class="panel-header">
+            <span>Workspace</span>
+          </div>
+          <div class="workspace-box">
+            <p>Local mode is active.</p>
+            <p>Requires Ollama and a compatible model.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>Focus</span>
+          </div>
+          <ul class="focus-list">
+            <li>Roblox development</li>
+            <li>Game systems</li>
+            <li>UI and scripts</li>
+            <li>Bug fixing</li>
+            <li>Project planning</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
