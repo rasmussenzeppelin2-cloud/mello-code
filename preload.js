@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('melloAPI', {
   listFiles: (folderPath) => ipcRenderer.invoke('list-files', folderPath),
   readFile: (filePath) => ipcRenderer.invoke('read-file', filePath),
   saveFile: (filePath, content) => ipcRenderer.invoke('save-file', filePath, content),
-  getModels: () => ipcRenderer.invoke('get-models'),
+  getSettings: () => ipcRenderer.invoke('get-settings'),
+  saveSettings: (settings) => ipcRenderer.invoke('save-settings', settings),
   generateText: (request) => ipcRenderer.invoke('generate-text', request)
 });

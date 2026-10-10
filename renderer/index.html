@@ -10,16 +10,30 @@
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand">
-          <div class="logo">M</div>
+          <div class="logo"><span></span></div>
           <div>
             <h1>Mello Code</h1>
-            <small>Local AI coding agent</small>
+            <small>Local-first AI coding agent</small>
           </div>
         </div>
 
         <div class="controls">
           <button id="openProjectBtn">Open Project</button>
           <button id="newChatBtn" class="secondary">New Chat</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <span>AI Provider</span>
+          </div>
+          <select id="providerSelect" class="settings-input">
+            <option value="openai-compatible">OpenAI-compatible API</option>
+            <option value="local-model">Local model</option>
+          </select>
+          <input id="apiKeyInput" class="settings-input" type="password" placeholder="API key (optional for local code)" />
+          <input id="apiBaseUrlInput" class="settings-input" placeholder="API URL: https://api.openai.com/v1" />
+          <input id="modelInput" class="settings-input" placeholder="Model name: gpt-4o-mini" />
+          <button id="saveSettingsBtn" class="secondary">Save AI Settings</button>
         </div>
 
         <div class="panel">
@@ -44,14 +58,14 @@
         <header class="topbar">
           <div class="status">
             <span class="dot"></span>
-            <span id="statusText">Checking local AI...</span>
+            <span id="statusText">Ready</span>
           </div>
 
           <div class="toolbar">
             <label class="model-picker">
               <span>Model</span>
               <select id="modelSelect">
-                <option value="">Loading models...</option>
+                <option value="gpt-4o-mini">gpt-4o-mini</option>
               </select>
             </label>
           </div>
@@ -73,8 +87,8 @@
             <span>Workspace</span>
           </div>
           <div class="workspace-box">
-            <p>Local mode is active.</p>
-            <p>Requires Ollama and a compatible model.</p>
+            <p>AI provider is configurable in the sidebar.</p>
+            <p>No Ollama required.</p>
           </div>
         </div>
 

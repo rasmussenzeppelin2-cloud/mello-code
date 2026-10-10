@@ -1,63 +1,57 @@
 # Mello Code
 
-Mello Code is a local-first AI coding assistant for Windows. It is designed to help with:
-- general software engineering
-- game development
-- Roblox / Luau scripting
-- workspace-aware coding
-- local AI execution through Ollama
+Mello Code is a Windows desktop AI coding assistant built to work with a configurable AI provider instead of requiring Ollama.
 
-## Requirements
+## What this version does
 
-- Windows 10 or 11
-- Node.js 18 or newer
-- Ollama installed and running
+- Works without Ollama.
+- Supports an OpenAI-compatible API endpoint.
+- Supports a "local-model" mode placeholder for future bundled local model support.
+- Keeps the app user-configurable through saved settings.
+- Lets you open a project folder and work on files while chatting.
 
-## Install Ollama
+## Quick start
 
-Download and install Ollama:
-https://ollama.com/download/windows
-
-Then install a coding model:
-
-```bash
-ollama pull qwen2.5-coder:7b
-```
-
-or:
-
-```bash
-ollama pull deepseek-coder:6.7b
-```
-
-## Install project dependencies
+### 1) Install dependencies
 
 ```bash
 npm install
 ```
 
-## Start app
+### 2) Start the app
 
 ```bash
 npm start
 ```
 
-## Build executable
+### 3) Configure AI
+
+In the left sidebar, choose one of the AI providers:
+- OpenAI-compatible API
+- Local model
+
+For API mode, set:
+- API URL (example: `https://api.openai.com/v1`)
+- API key if required
+- Model name
+
+Then click **Save AI Settings**.
+
+## Important note
+
+This project no longer depends on Ollama, but it still requires some AI backend to actually generate answers:
+- Either a hosted API provider
+- Or a future local model bundle installed into a local-model path
+
+A real offline local model is not bundled in this repo yet, because a production offline LLM needs a specific model file and runtime setup.
+
+## Build Windows installer
 
 ```bash
 npm run dist
 ```
 
-This creates the Windows installer in the `build` folder.
-
-## Important notes
-
-- This app uses a local AI engine, not a paid API.
-- The app is functional as a desktop shell and local AI interface.
-- Real Roblox Studio automation would require a separate plugin + secure local bridge.
-- The app does not claim to have unlimited compute; local AI performance depends on your machine.
-
 ## Security note
 
-- Do not run untrusted code from the internet without review.
-- Approve sensitive actions before installing software or altering files.
+- Store API keys locally in your user profile, not in source code.
+- Do not run untrusted code without review.

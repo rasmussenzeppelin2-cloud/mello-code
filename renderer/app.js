@@ -8,10 +8,16 @@ const projectPath = document.getElementById('projectPath');
 const fileList = document.getElementById('fileList');
 const fileCount = document.getElementById('fileCount');
 const statusText = document.getElementById('statusText');
+const providerSelect = document.getElementById('providerSelect');
+const apiKeyInput = document.getElementById('apiKeyInput');
+const apiBaseUrlInput = document.getElementById('apiBaseUrlInput');
+const modelInput = document.getElementById('modelInput');
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 
 let currentProjectPath = null;
 let projectFiles = [];
 let activeModel = '';
+let currentSettings = { provider: 'openai-compatible', apiKey: '', baseUrl: 'https://api.openai.com/v1', model: 'gpt-4o-mini' };
 
 function addMessage(role, text) {
   const message = document.createElement('div');
@@ -21,44 +27,40 @@ function addMessage(role, text) {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-async function loadModels() {
-  statusText.textContent = 'Checking local AI...';
+function renderSettings(settings) {
+  currentSettings = settings;
+  providerSelect.value = settings.provider || 'openai-compatible';
+  apiKeyInput.value = settings.apiKey || '';
+  apiBaseUrlInput.value = settings.baseUrl || 'https://api.openai.com/v1';
+  modelInput.value = settings.model || 'gpt-4o-mini';
 
-  const result = await window.melloAPI.getModels();
-
-  if (!result.ok) {
-    statusText.textContent = 'Local AI not ready';
-    modelSelect.innerHTML = '<option value="">No model available</option>';
-    addMessage(
-      'system',
-      `Local AI connection failed: ${result.error}\n\nInstall Ollama and run: ollama pull qwen2.5-coder:7b`
-    );
-    return;
+  if (settings.provider === 'local-model') {
+    statusText.textContent = 'Local model mode selected';
   }
+}
 
-  const models = result.models.map((m) => m.name);
-  if (!models.length) {
-    modelSelect.innerHTML = '<option value="">No models downloaded</option>';
-    statusText.textContent = 'No local models available';
-    addMessage(
-      'system',
-      'No Ollama models are installed yet. Install Ollama, then run a command like:\n\nollama pull qwen2.5-coder:7b'
-    );
-    return;
+async function loadSettings() {
+  const settings = await window.melloAPI.getSettings();
+  renderSettings(settings);
+}
+
+async function saveCurrentSettings() {
+  const settings = {
+    provider: providerSelect.value,
+    apiKey: apiKeyInput.value.trim(),
+    baseUrl: apiBaseUrlInput.value.trim() || 'https://api.openai.com/v1',
+    model: modelInput.value.trim() || 'gpt-4o-mini'
+  };
+
+  const saved = await window.melloAPI.saveSettings(settings);
+  currentSettings = saved;
+
+  statusText.textContent = 'AI settings saved';
+  addMessage('system', `AI provider updated: ${saved.provider}.`);
+
+  if (saved.provider === 'local-model') {
+    addMessage('system', 'Local model mode is enabled, but it still needs a model bundle or engine. Until that is installed, switch to an API-backed provider for actual inference.');
   }
-
-  modelSelect.innerHTML = '';
-  models.forEach((model) => {
-    const option = document.createElement('option');
-    option.value = model;
-    option.textContent = model;
-    modelSelect.appendChild(option);
-  });
-
-  activeModel = models[0];
-  modelSelect.value = activeModel;
-
-  statusText.textContent = 'Local AI ready';
 }
 
 async function openProject() {
@@ -108,43 +110,31 @@ async function sendPrompt() {
   addMessage('user', prompt);
   promptInput.value = '';
 
-  const model = activeModel || modelSelect.value || 'qwen2.5-coder:7b';
-
-  if (!model) {
-    addMessage('system', 'No model selected. Install a local model first.');
-    return;
-  }
+  const model = activeModel || modelInput.value || currentSettings.model || 'gpt-4o-mini';
+  const settings = {
+    provider: providerSelect.value,
+    apiKey: apiKeyInput.value.trim(),
+    baseUrl: apiBaseUrlInput.value.trim() || 'https://api.openai.com/v1',
+    model,
+    localModelPath: currentSettings.localModelPath || ''
+  };
 
   statusText.textContent = 'Generating...';
 
   const result = await window.melloAPI.generateText({
     model,
     prompt,
-    systemPrompt: `
-      You are Mello Code, an AI coding assistant specialized in:
-      - general programming
-      - Roblox game development
-      - Luau scripting
-      - debugging
-      - project-based code generation
-      - clean architecture
-      - Windows app development
-
-      Be practical, direct, and precise.
-      If the user is asking for game systems or Roblox features, include realistic design choices.
-      If the user asks for code, provide concise but complete code snippets.
-      Explain changes clearly.
-      Do not claim you have performed actions that are not real.
-    `
+    systemPrompt: `You are Mello Code, an AI coding assistant specialized in general software engineering, Roblox game development, scripting, debugging, and project planning. Keep answers practical and direct.`,
+    providerSettings: settings
   });
 
   if (!result.ok) {
-    statusText.textContent = 'Model error';
+    statusText.textContent = 'AI error';
     addMessage('system', result.error);
     return;
   }
 
-  statusText.textContent = 'Local AI ready';
+  statusText.textContent = 'Ready';
   addMessage('assistant', result.text);
 }
 
@@ -153,6 +143,7 @@ newChatBtn.addEventListener('click', () => {
   chatMessages.innerHTML = '';
   addMessage('system', 'New chat started. Ask for a feature, bug fix, or game mechanic.');
 });
+
 sendBtn.addEventListener('click', sendPrompt);
 
 promptInput.addEventListener('keydown', (event) => {
@@ -162,9 +153,9 @@ promptInput.addEventListener('keydown', (event) => {
   }
 });
 
-modelSelect.addEventListener('change', (event) => {
-  activeModel = event.target.value;
+saveSettingsBtn.addEventListener('click', async () => {
+  await saveCurrentSettings();
 });
 
-loadModels();
-addMessage('system', 'Mello Code is ready. Open a project folder and start building.');
+loadSettings();
+addMessage('system', 'Mello Code is ready. No Ollama required. Choose your AI provider below.');
